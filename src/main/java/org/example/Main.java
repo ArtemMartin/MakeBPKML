@@ -8,6 +8,13 @@ public class Main {
     private static File file;
 
     public static void main(String[] args) {
+        try {
+            System.out.println("Ждем чтения с базы...");
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         file = new File("D:\\YO_NA\\BPExcel\\ADn.csv");
         makeOPKML("GADn");
 
