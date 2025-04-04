@@ -6,13 +6,28 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MakeKML {
     private final File filePath;
 
     public MakeKML(String fileName, OP op) {
         this.filePath = new File("D:\\YO_NA\\BP_KML\\BP\\" + fileName + ".kml");
+        try {
+            filePath.createNewFile();
+        } catch (IOException e) {
+            myLogger(e);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                myLogger(ex);
+            }
+        }
         generate(op);
+    }
+
+    private static void myLogger(Exception e) {
+        Logger.getLogger(MakeKML.class.getName()).info(e.getMessage());
     }
 
     public static List<Double> refactorXYtoBL(OP op) {

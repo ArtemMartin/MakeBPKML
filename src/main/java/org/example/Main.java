@@ -2,7 +2,10 @@ package org.example;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.logging.Logger;
+
 import org.apache.commons.io.FileUtils;
 
 public class Main {
@@ -12,29 +15,70 @@ public class Main {
     public static void main(String[] args) {
         try {
             System.out.println("Ждем чтения с базы...");
-            Thread.sleep(5000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            myLogger(e.getMessage());
         }
 
-        cleanDirectory("D:\\YO_NA\\BP_KML\\BP\\GADn");
-        file = new File("D:\\YO_NA\\BPExcel\\ADn.csv");
-        makeOPKML("GADn");
+        try {
+            cleanDirectory("D:\\YO_NA\\BP_KML\\BP\\GADn");
+            file = new File("D:\\YO_NA\\BPExcel\\ADn.csv");
+            makeOPKML("GADn");
 
-        cleanDirectory("D:\\YO_NA\\BP_KML\\BP\\ReADn");
-        file = new File("D:\\YO_NA\\BPExcel\\READn.csv");
-        makeOPKML("ReADn");
+            cleanDirectory("D:\\YO_NA\\BP_KML\\BP\\ReADn");
+            file = new File("D:\\YO_NA\\BPExcel\\READn.csv");
+            makeOPKML("ReADn");
 
-        cleanDirectory("D:\\YO_NA\\BP_KML\\BP\\Minometu");
-        file = new File("D:\\YO_NA\\BPExcel\\Minometu.csv");
-        makeOPKML("Minometu");
+            cleanDirectory("D:\\YO_NA\\BP_KML\\BP\\Minometu");
+            file = new File("D:\\YO_NA\\BPExcel\\Minometu.csv");
+            makeOPKML("Minometu");
+        } catch (Exception e) {
+            myLogger(e.getMessage());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                myLogger(ex.getMessage());
+            }
+        }
+        bingo("Успешно!!!");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            myLogger(e.getMessage());
+        }
     }
 
-    private static void cleanDirectory(String path) {
+    private static void bingo(String x) {
+        System.out.println(x);
         try {
-            FileUtils.cleanDirectory(new File(path));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            myLogger(ex.getMessage());
+        }
+    }
+
+    private static void myLogger(String e) {
+        Logger.getLogger(Main.class.getName()).info(e);
+    }
+
+    private static void cleanDirectory(String dirName) {
+        Path pathToDelete = Paths.get(dirName);
+        try {
+            Files.walkFileTree(pathToDelete, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    if (exc != null) throw exc;
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException ex) {
+            myLogger(ex.getMessage());
         }
     }
 
@@ -51,7 +95,7 @@ public class Main {
             }
 
         } catch (IOException e) {
-            Logger.getLogger(Main.class.getName()).info(e.getMessage());
+            myLogger(e.getMessage());
         }
     }
 }
